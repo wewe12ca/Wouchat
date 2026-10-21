@@ -8,9 +8,77 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #111b21; color: #e9edef; height: 100vh; overflow: hidden; }
 
+        /* Pantalla de Auth (Login / Registro) */
+        .auth-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #0b141a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .auth-card {
+            background-color: #202c33;
+            padding: 32px;
+            border-radius: 12px;
+            width: 360px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border: 1px solid #222d34;
+        }
+
+        .auth-card h2 { color: #00a884; font-size: 24px; text-align: center; }
+        .auth-card p { color: #8696a0; font-size: 13px; text-align: center; }
+
+        .auth-form { display: flex; flex-direction: column; gap: 12px; }
+
+        .auth-input {
+            background-color: #2a3942;
+            border: 1px solid #222d34;
+            border-radius: 8px;
+            padding: 12px;
+            color: #e9edef;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .auth-btn {
+            background-color: #00a884;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .auth-btn:hover { background-color: #008f6f; }
+
+        .auth-toggle {
+            font-size: 13px;
+            color: #53bdeb;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .auth-error {
+            color: #ea868f;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        /* App Principal Wouchat */
         .app-container { display: flex; width: 100vw; height: 100vh; }
 
-        /* 1. Barra Lateral de Iconos */
+        /* Barra Lateral de Iconos */
         .icon-bar {
             width: 60px;
             background-color: #202c33;
@@ -46,7 +114,7 @@
             color: #00a884;
         }
 
-        /* 2. Panel Lateral de Chats */
+        /* Sidebar de Chats */
         .sidebar {
             width: 340px;
             background-color: #111b21;
@@ -74,10 +142,7 @@
             background-color: #182229;
         }
 
-        .notes-avatar-container {
-            position: relative;
-            cursor: pointer;
-        }
+        .notes-avatar-container { position: relative; cursor: pointer; }
 
         .note-bubble {
             position: absolute;
@@ -108,7 +173,6 @@
             margin-top: 4px;
         }
 
-        /* Búsqueda y Filtros */
         .search-container { padding: 8px 12px; }
         .search-box {
             background-color: #202c33;
@@ -140,7 +204,6 @@
         }
         .tag.active { background-color: #0a332c; color: #00a884; }
 
-        /* Lista de Usuarios / Chats */
         .user-list { flex: 1; overflow-y: auto; list-style: none; }
         .user-item {
             display: flex;
@@ -172,15 +235,10 @@
         .user-info .name { font-size: 15px; font-weight: 500; color: #e9edef; }
         .user-info .status { font-size: 12px; color: #8696a0; }
 
-        .fav-star {
-            color: #53bdeb;
-            font-size: 16px;
-            cursor: pointer;
-            padding: 4px;
-        }
+        .fav-star { color: #53bdeb; font-size: 16px; cursor: pointer; padding: 4px; }
         .fav-star.is-fav { color: #f1c40f; }
 
-        /* 3. Área Principal de Chat */
+        /* Área Principal de Chat */
         .chat-area { flex: 1; display: flex; flex-direction: column; background-color: #0b141a; }
         .chat-header {
             height: 60px;
@@ -265,6 +323,25 @@
     </style>
 </head>
 <body>
+
+    <!-- Overlay de Autenticación (Login / Registro) -->
+    <div class="auth-overlay" id="auth-overlay">
+        <div class="auth-card">
+            <h2 id="auth-title">Entrar a Wouchat</h2>
+            <p id="auth-subtitle">Introduce tu usuario y contraseña</p>
+            
+            <form class="auth-form" id="auth-form">
+                <input type="text" class="auth-input" id="auth-user" placeholder="Nombre de usuario" required autocomplete="off">
+                <input type="password" class="auth-input" id="auth-pass" placeholder="Contraseña" required>
+                <button type="submit" class="auth-btn" id="auth-submit-btn">Iniciar Sesión</button>
+            </form>
+
+            <div class="auth-error" id="auth-error"></div>
+            <div class="auth-toggle" id="auth-toggle" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate aquí</div>
+        </div>
+    </div>
+
+    <!-- Contenedor Principal de Wouchat -->
     <div class="app-container">
         
         <!-- Iconos Izquierda -->
@@ -292,7 +369,7 @@
                     <div class="avatar" id="my-avatar">U</div>
                 </div>
                 <div class="notes-info">
-                    <div style="font-size: 13px; font-weight: 600;">Tu Nota de Estado</div>
+                    <div style="font-size: 13px; font-weight: 600;" id="my-username-display">Tu Nota</div>
                     <button onclick="createNote()">+ Añadir nota</button>
                 </div>
             </div>
@@ -300,11 +377,11 @@
             <div class="search-container">
                 <div class="search-box">
                     <span>🔍</span>
-                    <input type="text" id="search-input" placeholder="Buscar un chat o iniciar uno nuevo" oninput="renderUserList()">
+                    <input type="text" id="search-input" placeholder="Buscar un chat..." oninput="renderUserList()">
                 </div>
             </div>
 
-            <!-- Filtros funcionales -->
+            <!-- Filtros -->
             <div class="filter-tags">
                 <div class="tag active" id="filter-todos" onclick="setFilter('todos')">Todos</div>
                 <div class="tag" id="filter-favoritos" onclick="setFilter('favoritos')">Favoritos</div>
@@ -337,18 +414,97 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        let socket;
+        let username = '';
+        let isRegisterMode = false;
 
-        let username = prompt("¿Cómo te llamas para entrar a Wouchat?") || "Anónimo";
-        document.getElementById('my-avatar').textContent = username.charAt(0).toUpperCase();
-        socket.emit('join', username);
+        // Gestión de Autenticación
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const toggleText = document.getElementById('auth-toggle');
+            const errorDiv = document.getElementById('auth-error');
+
+            errorDiv.style.display = 'none';
+
+            if (isRegisterMode) {
+                title.textContent = 'Crear Cuenta';
+                subtitle.textContent = 'Regístrate para guardar tus chats';
+                submitBtn.textContent = 'Registrarse';
+                toggleText.textContent = '¿Ya tienes cuenta? Inicia sesión';
+            } else {
+                title.textContent = 'Entrar a Wouchat';
+                subtitle.textContent = 'Introduce tu usuario y contraseña';
+                submitBtn.textContent = 'Iniciar Sesión';
+                toggleText.textContent = '¿No tienes cuenta? Regístrate aquí';
+            }
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userVal = document.getElementById('auth-user').value.trim();
+            const passVal = document.getElementById('auth-pass').value;
+            const errorDiv = document.getElementById('auth-error');
+
+            const endpoint = isRegisterMode ? '/api/register' : '/api/login';
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: userVal, password: passVal })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorDiv.textContent = data.error || 'Error al autenticar';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                if (isRegisterMode) {
+                    alert('¡Cuenta creada con éxito! Ahora inicia sesión.');
+                    toggleAuthMode();
+                } else {
+                    username = data.username;
+                    document.getElementById('auth-overlay').style.display = 'none';
+                    initChat(data.note);
+                }
+
+            } catch (err) {
+                errorDiv.textContent = 'Error de conexión con el servidor';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        // Inicialización del Chat tras Login
+        function initChat(initialNote) {
+            document.getElementById('my-avatar').textContent = username.charAt(0).toUpperCase();
+            document.getElementById('my-username-display').textContent = username;
+
+            if (initialNote) {
+                const bubble = document.getElementById('my-note-bubble');
+                bubble.textContent = initialNote;
+                bubble.style.display = 'block';
+            }
+
+            socket = io();
+            socket.emit('join', username);
+
+            // Cargar Historial del Grupo General al inicio
+            socket.emit('get_history', 'GLOBAL');
+
+            setupSocketListeners();
+        }
 
         // Estado del cliente
         let currentFilter = 'todos';
-        let currentTarget = 'GLOBAL'; // 'GLOBAL' para grupo público o el nombre del usuario para chat privado
+        let currentTarget = 'GLOBAL';
         let favorites = JSON.parse(localStorage.getItem('wouchat_favs') || '[]');
         let onlineUsers = [];
-        let privateStore = {};
         let typingTimeout;
 
         const form = document.getElementById('form');
@@ -357,7 +513,6 @@
         const usersList = document.getElementById('users-list');
         const typingIndicator = document.getElementById('typing-indicator');
 
-        // Filtros
         function setFilter(filter) {
             currentFilter = filter;
             document.querySelectorAll('.filter-tags .tag').forEach(t => t.classList.remove('active'));
@@ -365,7 +520,6 @@
             renderUserList();
         }
 
-        // Alternar Favorito
         function toggleFavorite(name, e) {
             e.stopPropagation();
             if (favorites.includes(name)) {
@@ -377,7 +531,6 @@
             renderUserList();
         }
 
-        // Crear Nota de Estado
         function createNote() {
             const note = prompt("Escribe una nota corta (máx 60 caracteres):");
             if (note !== null) {
@@ -392,7 +545,6 @@
             }
         }
 
-        // Cambiar de Chat (General / Privado)
         function selectChat(target) {
             currentTarget = target;
             typingIndicator.style.display = 'none';
@@ -407,16 +559,16 @@
                 document.getElementById('active-chat-status').textContent = 'Mensaje privado directo';
             }
 
+            // Pedir historial a SQLite para el chat seleccionado
+            socket.emit('get_history', target);
+
             renderUserList();
-            renderMessages();
         }
 
-        // Renderizado de Lista
         function renderUserList() {
             usersList.innerHTML = '';
             const searchVal = document.getElementById('search-input').value.toLowerCase();
 
-            // Opción Chat General (Grupo)
             if (currentFilter === 'todos' || currentFilter === 'grupos' || (currentFilter === 'favoritos' && favorites.includes('GLOBAL'))) {
                 if ('grupo wouchat - asir'.includes(searchVal)) {
                     const isFav = favorites.includes('GLOBAL');
@@ -436,7 +588,6 @@
                 }
             }
 
-            // Usuarios en línea (Chats Directos)
             if (currentFilter === 'todos' || currentFilter === 'favoritos') {
                 onlineUsers.forEach(u => {
                     if (u.username === username) return;
@@ -469,8 +620,8 @@
             }
         }
 
-        // Detección de "está escribiendo..."
         input.addEventListener('input', () => {
+            if (!socket) return;
             socket.emit('typing', { target: currentTarget });
 
             clearTimeout(typingTimeout);
@@ -479,7 +630,6 @@
             }, 1500);
         });
 
-        // Enviar mensaje
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             if (input.value.trim()) {
@@ -493,45 +643,57 @@
             }
         });
 
-        // Eventos Socket.io
-        socket.on('chat_message', (data) => {
-            if (!privateStore['GLOBAL']) privateStore['GLOBAL'] = [];
-            privateStore['GLOBAL'].push(data);
+        // Eventos de Socket.io
+        function setupSocketListeners() {
+            // Recibir historial guardado en SQLite
+            socket.on('chat_history', (data) => {
+                if (data.target === currentTarget) {
+                    messagesContainer.innerHTML = '';
+                    data.messages.forEach(m => {
+                        appendMessage(m.sender === username ? 'my' : 'other', m.sender, m.text, m.time);
+                    });
+                }
+            });
 
-            if (currentTarget === 'GLOBAL') {
-                appendMessage(data.user === username ? 'my' : 'other', data.user, data.text, data.time);
-            }
-        });
+            socket.on('chat_message', (data) => {
+                if (currentTarget === 'GLOBAL') {
+                    appendMessage(data.user === username ? 'my' : 'other', data.user, data.text, data.time);
+                }
+            });
 
-        socket.on('private_message', (data) => {
-            const chatKey = data.sender === username ? data.target : data.sender;
-            if (!privateStore[chatKey]) privateStore[chatKey] = [];
-            privateStore[chatKey].push(data);
+            socket.on('private_message', (data) => {
+                const chatKey = data.sender === username ? data.target : data.sender;
+                if (currentTarget === chatKey) {
+                    appendMessage(data.sender === username ? 'my' : 'other', data.sender, data.text, data.time);
+                }
+            });
 
-            if (currentTarget === chatKey) {
-                appendMessage(data.sender === username ? 'my' : 'other', data.sender, data.text, data.time);
-            }
-        });
+            socket.on('user_typing', (data) => {
+                if (data.target === currentTarget || (currentTarget === data.username && data.target !== 'GLOBAL')) {
+                    typingIndicator.textContent = `${data.username} está escribiendo...`;
+                    typingIndicator.style.display = 'block';
+                }
+            });
 
-        socket.on('user_typing', (data) => {
-            if (data.target === currentTarget || (currentTarget === data.username && data.target !== 'GLOBAL')) {
-                typingIndicator.textContent = `${data.username} está escribiendo...`;
-                typingIndicator.style.display = 'block';
-            }
-        });
+            socket.on('user_stop_typing', (data) => {
+                if (data.target === currentTarget || (currentTarget === data.username && data.target !== 'GLOBAL')) {
+                    typingIndicator.style.display = 'none';
+                }
+            });
 
-        socket.on('user_stop_typing', (data) => {
-            if (data.target === currentTarget || (currentTarget === data.username && data.target !== 'GLOBAL')) {
-                typingIndicator.style.display = 'none';
-            }
-        });
+            socket.on('notification', (text) => {
+                if (currentTarget === 'GLOBAL') {
+                    const item = document.createElement('div');
+                    item.className = 'notification';
+                    item.textContent = text;
+                    messagesContainer.appendChild(item);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            });
 
-        function renderMessages() {
-            messagesContainer.innerHTML = '';
-            const history = privateStore[currentTarget] || [];
-            history.forEach(m => {
-                const author = m.user || m.sender;
-                appendMessage(author === username ? 'my' : 'other', author, m.text, m.time);
+            socket.on('update_users', (users) => {
+                onlineUsers = users;
+                renderUserList();
             });
         }
 
@@ -546,21 +708,6 @@
             messagesContainer.appendChild(item);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
-
-        socket.on('notification', (text) => {
-            if (currentTarget === 'GLOBAL') {
-                const item = document.createElement('div');
-                item.className = 'notification';
-                item.textContent = text;
-                messagesContainer.appendChild(item);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-        });
-
-        socket.on('update_users', (users) => {
-            onlineUsers = users;
-            renderUserList();
-        });
     </script>
 </body>
 </html>
