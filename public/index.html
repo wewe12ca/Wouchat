@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wouchat - ASIR</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; padding: 20px; }
+        #messages { background: #1e293b; padding: 15px; border-radius: 8px; height: 300px; overflow-y: auto; margin-bottom: 10px; }
+        #form { display: flex; gap: 10px; }
+        #input { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #475569; background: #334155; color: #fff; }
+        button { padding: 10px 20px; background: #3b82f6; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <h1>Chat Colaborativo - Wouchat</h1>
+    <div id="messages"></div>
+    <form id="form">
+        <input id="input" autocomplete="off" placeholder="Escribe un mensaje..." required />
+        <button>Enviar</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat_message', input.value);
+                input.value = '';
+            }
+        });
+
+        socket.on('chat_message', (msg) => {
+            const item = document.createElement('div');
+            item.textContent = msg;
+            messages.appendChild(item);
+            messages.scrollTop = messages.scrollHeight;
+        });
+    </script>
+</body>
+</html>
