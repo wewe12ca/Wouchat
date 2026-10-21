@@ -8,10 +8,9 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #111b21; color: #e9edef; height: 100vh; overflow: hidden; }
 
-        /* Estructura Principal estilo WhatsApp Desktop */
         .app-container { display: flex; width: 100vw; height: 100vh; }
 
-        /* 1. Barra de iconos fija a la izquierda */
+        /* 1. Barra Lateral de Iconos */
         .icon-bar {
             width: 60px;
             background-color: #202c33;
@@ -47,9 +46,9 @@
             color: #00a884;
         }
 
-        /* 2. Panel de Usuarios Conectados (Sidebar) */
+        /* 2. Panel Lateral de Chats */
         .sidebar {
-            width: 320px;
+            width: 340px;
             background-color: #111b21;
             border-right: 1px solid #222d34;
             display: flex;
@@ -65,11 +64,52 @@
 
         .sidebar-header h2 { font-size: 20px; font-weight: 600; color: #e9edef; }
 
-        .search-container {
-            padding: 8px 12px;
-            background-color: #111b21;
+        /* Notas estilo Instagram */
+        .notes-section {
+            padding: 10px 16px;
+            border-bottom: 1px solid #222d34;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #182229;
         }
 
+        .notes-avatar-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .note-bubble {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #00a884;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            white-space: nowrap;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .notes-info { flex: 1; }
+        .notes-info button {
+            background-color: #00a884;
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        /* Búsqueda y Filtros */
+        .search-container { padding: 8px 12px; }
         .search-box {
             background-color: #202c33;
             border-radius: 8px;
@@ -78,7 +118,6 @@
             align-items: center;
             gap: 10px;
         }
-
         .search-box input {
             background: transparent;
             border: none;
@@ -88,13 +127,7 @@
             font-size: 14px;
         }
 
-        /* Filtros "Todos", "Favoritos", etc. */
-        .filter-tags {
-            display: flex;
-            gap: 8px;
-            padding: 10px 12px;
-        }
-
+        .filter-tags { display: flex; gap: 8px; padding: 10px 12px; }
         .tag {
             background-color: #202c33;
             color: #8696a0;
@@ -103,20 +136,12 @@
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
+            user-select: none;
         }
+        .tag.active { background-color: #0a332c; color: #00a884; }
 
-        .tag.active {
-            background-color: #0a332c;
-            color: #00a884;
-        }
-
-        /* Lista de usuarios conectados */
-        .user-list {
-            flex: 1;
-            overflow-y: auto;
-            list-style: none;
-        }
-
+        /* Lista de Usuarios / Chats */
+        .user-list { flex: 1; overflow-y: auto; list-style: none; }
         .user-item {
             display: flex;
             align-items: center;
@@ -124,9 +149,9 @@
             gap: 12px;
             cursor: pointer;
             border-bottom: 1px solid #1f2c34;
+            position: relative;
         }
-
-        .user-item:hover { background-color: #202c33; }
+        .user-item:hover, .user-item.active { background-color: #202c33; }
 
         .avatar {
             width: 45px;
@@ -140,21 +165,23 @@
             font-size: 18px;
             color: #fff;
             text-transform: uppercase;
-        }
-
-        .user-info { flex: 1; }
-        .user-info .name { font-size: 16px; font-weight: 500; color: #e9edef; }
-        .user-info .status { font-size: 13px; color: #00a884; }
-
-        /* 3. Panel de Chat Principal */
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #0b141a;
             position: relative;
         }
 
+        .user-info { flex: 1; }
+        .user-info .name { font-size: 15px; font-weight: 500; color: #e9edef; }
+        .user-info .status { font-size: 12px; color: #8696a0; }
+
+        .fav-star {
+            color: #53bdeb;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .fav-star.is-fav { color: #f1c40f; }
+
+        /* 3. Área Principal de Chat */
+        .chat-area { flex: 1; display: flex; flex-direction: column; background-color: #0b141a; }
         .chat-header {
             height: 60px;
             background-color: #202c33;
@@ -176,53 +203,21 @@
             background-size: 20px 20px;
         }
 
-        /* Burbujas de Mensaje */
         .message {
             max-width: 65%;
             padding: 8px 12px 6px 12px;
             border-radius: 8px;
             font-size: 14.2px;
             line-height: 19px;
-            position: relative;
             word-break: break-word;
-            box-shadow: 0 1px 0.5px rgba(11,20,26,.13);
             display: flex;
             flex-direction: column;
         }
-
-        .my-message {
-            align-self: flex-end;
-            background-color: #005c4b;
-            color: #e9edef;
-            border-top-right-radius: 0;
-        }
-
-        .other-message {
-            align-self: flex-start;
-            background-color: #202c33;
-            color: #e9edef;
-            border-top-left-radius: 0;
-        }
-
-        .message-author {
-            font-size: 12px;
-            font-weight: 600;
-            color: #53bdeb;
-            margin-bottom: 2px;
-        }
-
-        /* Hora dentro del mensaje */
-        .message-time {
-            font-size: 11px;
-            color: #8696a0;
-            align-self: flex-end;
-            margin-top: 4px;
-            margin-left: 12px;
-        }
-
-        .my-message .message-time {
-            color: #79ac9f;
-        }
+        .my-message { align-self: flex-end; background-color: #005c4b; color: #e9edef; border-top-right-radius: 0; }
+        .other-message { align-self: flex-start; background-color: #202c33; color: #e9edef; border-top-left-radius: 0; }
+        .message-author { font-size: 12px; font-weight: 600; color: #53bdeb; margin-bottom: 2px; }
+        .message-time { font-size: 11px; color: #8696a0; align-self: flex-end; margin-top: 4px; margin-left: 12px; }
+        .my-message .message-time { color: #79ac9f; }
 
         .notification {
             align-self: center;
@@ -233,7 +228,6 @@
             border-radius: 8px;
             margin: 6px 0;
             text-align: center;
-            box-shadow: 0 1px 0.5px rgba(0,0,0,.13);
         }
 
         .chat-input-bar {
@@ -244,7 +238,6 @@
             align-items: center;
             gap: 12px;
         }
-
         .chat-input-bar input {
             flex: 1;
             height: 42px;
@@ -256,7 +249,6 @@
             font-size: 15px;
             outline: none;
         }
-
         .chat-input-bar button {
             background: #00a884;
             border: none;
@@ -270,14 +262,12 @@
             justify-content: center;
             font-size: 16px;
         }
-
-        .chat-input-bar button:hover { background-color: #008f6f; }
     </style>
 </head>
 <body>
     <div class="app-container">
         
-        <!-- 1. Barra Lateral de Iconos -->
+        <!-- Iconos Izquierda -->
         <div class="icon-bar">
             <div class="top-icons">
                 <div class="icon-btn active" title="Chats">💬</div>
@@ -289,35 +279,49 @@
             </div>
         </div>
 
-        <!-- 2. Panel de Lista de Usuarios / Chats -->
+        <!-- Sidebar de Chats -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>Chats</h2>
             </div>
-            
-            <div class="search-container">
-                <div class="search-box">
-                    <span>🔍</span>
-                    <input type="text" placeholder="Buscar un chat o iniciar uno nuevo">
+
+            <!-- Sección Notas estilo Instagram -->
+            <div class="notes-section">
+                <div class="notes-avatar-container" onclick="createNote()">
+                    <div class="note-bubble" id="my-note-bubble" style="display:none;">Tu nota</div>
+                    <div class="avatar" id="my-avatar">U</div>
+                </div>
+                <div class="notes-info">
+                    <div style="font-size: 13px; font-weight: 600;">Tu Nota de Estado</div>
+                    <button onclick="createNote()">+ Añadir nota</button>
                 </div>
             </div>
 
+            <div class="search-container">
+                <div class="search-box">
+                    <span>🔍</span>
+                    <input type="text" id="search-input" placeholder="Buscar un chat o iniciar uno nuevo" oninput="renderUserList()">
+                </div>
+            </div>
+
+            <!-- Filtros funcionales -->
             <div class="filter-tags">
-                <div class="tag active">Todos</div>
-                <div class="tag">Favoritos</div>
-                <div class="tag">Grupos</div>
+                <div class="tag active" id="filter-todos" onclick="setFilter('todos')">Todos</div>
+                <div class="tag" id="filter-favoritos" onclick="setFilter('favoritos')">Favoritos</div>
+                <div class="tag" id="filter-grupos" onclick="setFilter('grupos')">Grupos</div>
             </div>
 
             <ul class="user-list" id="users-list"></ul>
         </div>
 
-        <!-- 3. Área Principal de Chat -->
+        <!-- Panel de Chat Principal -->
         <div class="chat-area">
             <div class="chat-header">
-                <div class="avatar">W</div>
+                <div class="avatar" id="active-chat-avatar">W</div>
                 <div>
-                    <div style="font-weight: 600; font-size: 16px;">Grupo Wouchat - ASIR</div>
-                    <div style="font-size: 13px; color: #8696a0;">Chat general en tiempo real</div>
+                    <div style="font-weight: 600; font-size: 16px;" id="active-chat-title">Grupo Wouchat - ASIR</div>
+                    <div style="font-size: 13px; color: #8696a0;" id="active-chat-status">Chat general en tiempo real</div>
+                    <div style="font-size: 12px; color: #00a884; font-style: italic; display: none;" id="typing-indicator"></div>
                 </div>
             </div>
 
@@ -336,69 +340,226 @@
         const socket = io();
 
         let username = prompt("¿Cómo te llamas para entrar a Wouchat?") || "Anónimo";
+        document.getElementById('my-avatar').textContent = username.charAt(0).toUpperCase();
         socket.emit('join', username);
+
+        // Estado del cliente
+        let currentFilter = 'todos';
+        let currentTarget = 'GLOBAL'; // 'GLOBAL' para grupo público o el nombre del usuario para chat privado
+        let favorites = JSON.parse(localStorage.getItem('wouchat_favs') || '[]');
+        let onlineUsers = [];
+        let privateStore = {};
+        let typingTimeout;
 
         const form = document.getElementById('form');
         const input = document.getElementById('input');
-        const messages = document.getElementById('messages');
+        const messagesContainer = document.getElementById('messages');
         const usersList = document.getElementById('users-list');
+        const typingIndicator = document.getElementById('typing-indicator');
 
+        // Filtros
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tags .tag').forEach(t => t.classList.remove('active'));
+            document.getElementById(`filter-${filter}`).classList.add('active');
+            renderUserList();
+        }
+
+        // Alternar Favorito
+        function toggleFavorite(name, e) {
+            e.stopPropagation();
+            if (favorites.includes(name)) {
+                favorites = favorites.filter(f => f !== name);
+            } else {
+                favorites.push(name);
+            }
+            localStorage.setItem('wouchat_favs', JSON.stringify(favorites));
+            renderUserList();
+        }
+
+        // Crear Nota de Estado
+        function createNote() {
+            const note = prompt("Escribe una nota corta (máx 60 caracteres):");
+            if (note !== null) {
+                socket.emit('set_note', note);
+                const bubble = document.getElementById('my-note-bubble');
+                if (note.trim()) {
+                    bubble.textContent = note;
+                    bubble.style.display = 'block';
+                } else {
+                    bubble.style.display = 'none';
+                }
+            }
+        }
+
+        // Cambiar de Chat (General / Privado)
+        function selectChat(target) {
+            currentTarget = target;
+            typingIndicator.style.display = 'none';
+
+            if (target === 'GLOBAL') {
+                document.getElementById('active-chat-avatar').textContent = 'W';
+                document.getElementById('active-chat-title').textContent = 'Grupo Wouchat - ASIR';
+                document.getElementById('active-chat-status').textContent = 'Chat general en tiempo real';
+            } else {
+                document.getElementById('active-chat-avatar').textContent = target.charAt(0).toUpperCase();
+                document.getElementById('active-chat-title').textContent = target;
+                document.getElementById('active-chat-status').textContent = 'Mensaje privado directo';
+            }
+
+            renderUserList();
+            renderMessages();
+        }
+
+        // Renderizado de Lista
+        function renderUserList() {
+            usersList.innerHTML = '';
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+
+            // Opción Chat General (Grupo)
+            if (currentFilter === 'todos' || currentFilter === 'grupos' || (currentFilter === 'favoritos' && favorites.includes('GLOBAL'))) {
+                if ('grupo wouchat - asir'.includes(searchVal)) {
+                    const isFav = favorites.includes('GLOBAL');
+                    const isActive = currentTarget === 'GLOBAL';
+                    const li = document.createElement('li');
+                    li.className = `user-item ${isActive ? 'active' : ''}`;
+                    li.onclick = () => selectChat('GLOBAL');
+                    li.innerHTML = `
+                        <div class="avatar">W</div>
+                        <div class="user-info">
+                            <div class="name">Grupo Wouchat - ASIR</div>
+                            <div class="status">Grupo público</div>
+                        </div>
+                        <span class="fav-star ${isFav ? 'is-fav' : ''}" onclick="toggleFavorite('GLOBAL', event)">★</span>
+                    `;
+                    usersList.appendChild(li);
+                }
+            }
+
+            // Usuarios en línea (Chats Directos)
+            if (currentFilter === 'todos' || currentFilter === 'favoritos') {
+                onlineUsers.forEach(u => {
+                    if (u.username === username) return;
+                    if (!u.username.toLowerCase().includes(searchVal)) return;
+
+                    const isFav = favorites.includes(u.username);
+                    if (currentFilter === 'favoritos' && !isFav) return;
+
+                    const isActive = currentTarget === u.username;
+                    const li = document.createElement('li');
+                    li.className = `user-item ${isActive ? 'active' : ''}`;
+                    li.onclick = () => selectChat(u.username);
+
+                    const initial = u.username.charAt(0).toUpperCase();
+                    const noteHtml = u.note ? `<div class="note-bubble">${u.note}</div>` : '';
+
+                    li.innerHTML = `
+                        <div class="avatar">
+                            ${noteHtml}
+                            ${initial}
+                        </div>
+                        <div class="user-info">
+                            <div class="name">${u.username}</div>
+                            <div class="status">en línea</div>
+                        </div>
+                        <span class="fav-star ${isFav ? 'is-fav' : ''}" onclick="toggleFavorite('${u.username}', event)">★</span>
+                    `;
+                    usersList.appendChild(li);
+                });
+            }
+        }
+
+        // Detección de "está escribiendo..."
+        input.addEventListener('input', () => {
+            socket.emit('typing', { target: currentTarget });
+
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                socket.emit('stop_typing', { target: currentTarget });
+            }, 1500);
+        });
+
+        // Enviar mensaje
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             if (input.value.trim()) {
-                socket.emit('chat_message', { user: username, text: input.value });
+                if (currentTarget === 'GLOBAL') {
+                    socket.emit('chat_message', { user: username, text: input.value });
+                } else {
+                    socket.emit('private_message', { targetUser: currentTarget, text: input.value });
+                }
+                socket.emit('stop_typing', { target: currentTarget });
                 input.value = '';
             }
         });
 
+        // Eventos Socket.io
         socket.on('chat_message', (data) => {
-            const item = document.createElement('div');
-            item.classList.add('message');
+            if (!privateStore['GLOBAL']) privateStore['GLOBAL'] = [];
+            privateStore['GLOBAL'].push(data);
 
-            if (data.user === username) {
-                item.classList.add('my-message');
-                item.innerHTML = `
-                    <div>${data.text}</div>
-                    <span class="message-time">${data.time}</span>
-                `;
-            } else {
-                item.classList.add('other-message');
-                item.innerHTML = `
-                    <div class="message-author">${data.user}</div>
-                    <div>${data.text}</div>
-                    <span class="message-time">${data.time}</span>
-                `;
+            if (currentTarget === 'GLOBAL') {
+                appendMessage(data.user === username ? 'my' : 'other', data.user, data.text, data.time);
             }
-
-            messages.appendChild(item);
-            messages.scrollTop = messages.scrollHeight;
         });
 
-        socket.on('notification', (text) => {
+        socket.on('private_message', (data) => {
+            const chatKey = data.sender === username ? data.target : data.sender;
+            if (!privateStore[chatKey]) privateStore[chatKey] = [];
+            privateStore[chatKey].push(data);
+
+            if (currentTarget === chatKey) {
+                appendMessage(data.sender === username ? 'my' : 'other', data.sender, data.text, data.time);
+            }
+        });
+
+        socket.on('user_typing', (data) => {
+            if (data.target === currentTarget || (currentTarget === data.username && data.target !== 'GLOBAL')) {
+                typingIndicator.textContent = `${data.username} está escribiendo...`;
+                typingIndicator.style.display = 'block';
+            }
+        });
+
+        socket.on('user_stop_typing', (data) => {
+            if (data.target === currentTarget || (currentTarget === data.username && data.target !== 'GLOBAL')) {
+                typingIndicator.style.display = 'none';
+            }
+        });
+
+        function renderMessages() {
+            messagesContainer.innerHTML = '';
+            const history = privateStore[currentTarget] || [];
+            history.forEach(m => {
+                const author = m.user || m.sender;
+                appendMessage(author === username ? 'my' : 'other', author, m.text, m.time);
+            });
+        }
+
+        function appendMessage(type, author, text, time) {
             const item = document.createElement('div');
-            item.classList.add('notification');
-            item.textContent = text;
-            messages.appendChild(item);
-            messages.scrollTop = messages.scrollHeight;
+            item.className = `message ${type === 'my' ? 'my-message' : 'other-message'}`;
+            item.innerHTML = `
+                ${type === 'other' ? `<div class="message-author">${author}</div>` : ''}
+                <div>${text}</div>
+                <span class="message-time">${time}</span>
+            `;
+            messagesContainer.appendChild(item);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        socket.on('notification', (text) => {
+            if (currentTarget === 'GLOBAL') {
+                const item = document.createElement('div');
+                item.className = 'notification';
+                item.textContent = text;
+                messagesContainer.appendChild(item);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
         });
 
         socket.on('update_users', (users) => {
-            usersList.innerHTML = '';
-            users.forEach(user => {
-                const li = document.createElement('li');
-                li.classList.add('user-item');
-                
-                const initial = user.charAt(0).toUpperCase();
-                
-                li.innerHTML = `
-                    <div class="avatar">${initial}</div>
-                    <div class="user-info">
-                        <div class="name">${user}</div>
-                        <div class="status">en línea</div>
-                    </div>
-                `;
-                usersList.appendChild(li);
-            });
+            onlineUsers = users;
+            renderUserList();
         });
     </script>
 </body>
