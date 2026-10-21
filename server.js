@@ -8,24 +8,30 @@ const io = new Server(server);
 
 app.use(express.static('public'));
 
+// Array para almacenar los nombres de los usuarios conectados
+let connectedUsers = [];
+
 io.on('connection', (socket) => {
     console.log(`Usuario conectado: ${socket.id}`);
 
-    // Cuando el usuario entra y envía su nombre
     socket.on('join', (username) => {
         socket.username = username;
-        // Broadcast para avisar a los demás que se ha unido
+        connectedUsers.push(username);
+        
+        // Enviar la lista actualizada de usuarios a todos
+        io.emit('update_users', connectedUsers);
         io.emit('notification', `${username} se ha unido al chat`);
     });
 
-    // Escuchar y reenviar mensajes
     socket.on('chat_message', (data) => {
         io.emit('chat_message', data);
     });
 
-    // Cuando se desconecta
     socket.on('disconnect', () => {
         if (socket.username) {
+            // Eliminar al usuario de la lista
+            connectedUsers = connectedUsers.filter(user => user !== socket.username);
+            io.emit('update_users', connectedUsers);
             io.emit('notification', `${socket.username} ha abandonado el chat`);
         }
         console.log(`Usuario desconectado: ${socket.id}`);

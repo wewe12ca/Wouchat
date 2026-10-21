@@ -5,8 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wouchat - ASIR</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; padding: 20px; }
-        
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; padding: 20px; margin: 0; }
+        h1 { text-align: center; }
+
+        /* Contenedor principal para dividir chat y barra lateral */
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .chat-section {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Panel lateral de usuarios */
+        .sidebar {
+            flex: 1;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            height: 350px;
+            overflow-y: auto;
+        }
+
+        .sidebar h3 { margin-top: 0; font-size: 1.1rem; border-bottom: 1px solid #475569; padding-bottom: 8px; }
+        #users-list { list-style: none; padding: 0; margin: 0; }
+        #users-list li { padding: 6px 0; border-bottom: 1px solid #334155; font-size: 0.95rem; }
+
         #messages { 
             background: #1e293b; 
             padding: 15px; 
@@ -27,19 +56,9 @@
             line-height: 1.4;
         }
 
-        .my-message { 
-            background: #3b82f6; 
-            align-self: flex-end; 
-            text-align: right; 
-        }
-
-        .other-message { 
-            background: #334155; 
-            align-self: flex-start; 
-            text-align: left; 
-        }
-
-        /* Estilo para los avisos de conexión/desconexión */
+        .my-message { background: #3b82f6; align-self: flex-end; text-align: right; }
+        .other-message { background: #334155; align-self: flex-start; text-align: left; }
+        
         .notification {
             text-align: center;
             color: #94a3b8;
@@ -57,24 +76,35 @@
 </head>
 <body>
     <h1>Chat Colaborativo - Wouchat</h1>
-    <div id="messages"></div>
-    <form id="form">
-        <input id="input" autocomplete="off" placeholder="Escribe un mensaje..." required />
-        <button>Enviar</button>
-    </form>
+    
+    <div class="container">
+        <!-- Sección del chat -->
+        <div class="chat-section">
+            <div id="messages"></div>
+            <form id="form">
+                <input id="input" autocomplete="off" placeholder="Escribe un mensaje..." required />
+                <button>Enviar</button>
+            </form>
+        </div>
+
+        <!-- Panel lateral de conectados -->
+        <div class="sidebar">
+            <h3>Conectados</h3>
+            <ul id="users-list"></ul>
+        </div>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
 
         let username = prompt("¿Cómo te llamas para entrar a Wouchat?") || "Anónimo";
-        
-        // Informamos al servidor de nuestro nombre al conectarnos
         socket.emit('join', username);
 
         const form = document.getElementById('form');
         const input = document.getElementById('input');
         const messages = document.getElementById('messages');
+        const usersList = document.getElementById('users-list');
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -100,13 +130,22 @@
             messages.scrollTop = messages.scrollHeight;
         });
 
-        // Escuchar cuando alguien se conecta o desconecta
         socket.on('notification', (text) => {
             const item = document.createElement('div');
             item.classList.add('notification');
             item.textContent = text;
             messages.appendChild(item);
             messages.scrollTop = messages.scrollHeight;
+        });
+
+        // Actualizar la lista de usuarios en pantalla
+        socket.on('update_users', (users) => {
+            usersList.innerHTML = ''; // Limpiar la lista actual
+            users.forEach((user) => {
+                const li = document.createElement('li');
+                li.textContent = user;
+                usersList.appendChild(li);
+            });
         });
     </script>
 </body>
