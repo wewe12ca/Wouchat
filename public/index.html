@@ -6,11 +6,46 @@
     <title>Wouchat - ASIR</title>
     <style>
         body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; padding: 20px; }
-        #messages { background: #1e293b; padding: 15px; border-radius: 8px; height: 300px; overflow-y: auto; margin-bottom: 10px; }
+        
+        #messages { 
+            background: #1e293b; 
+            padding: 15px; 
+            border-radius: 8px; 
+            height: 300px; 
+            overflow-y: auto; 
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Estilo base para todos los mensajes */
+        .message { 
+            padding: 10px 14px; 
+            border-radius: 8px; 
+            max-width: 70%; 
+            word-break: break-word; 
+            line-height: 1.4;
+        }
+
+        /* Estilo para los mensajes ENVIADOS POR TI */
+        .my-message { 
+            background: #3b82f6; 
+            align-self: flex-end; 
+            text-align: right; 
+        }
+
+        /* Estilo para los mensajes de JUAN u otros compañeros */
+        .other-message { 
+            background: #334155; 
+            align-self: flex-start; 
+            text-align: left; 
+        }
+
         #form { display: flex; gap: 10px; }
         #input { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #475569; background: #334155; color: #fff; }
-        button { padding: 10px 20px; background: #3b82f6; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #2563eb; }
+        button { padding: 10px 20px; background: #10b981; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #059669; }
     </style>
 </head>
 <body>
@@ -24,6 +59,10 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+
+        // Pedir nombre de usuario al entrar
+        let username = prompt("¿Cómo te llamas para entrar a Wouchat?") || "Anónimo";
+
         const form = document.getElementById('form');
         const input = document.getElementById('input');
         const messages = document.getElementById('messages');
@@ -31,14 +70,24 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             if (input.value) {
-                socket.emit('chat_message', input.value);
+                socket.emit('chat_message', { user: username, text: input.value });
                 input.value = '';
             }
         });
 
-        socket.on('chat_message', (msg) => {
+        socket.on('chat_message', (data) => {
             const item = document.createElement('div');
-            item.textContent = msg;
+            item.classList.add('message');
+
+            // Comparamos si el mensaje lo has enviado tú o otra persona
+            if (data.user === username) {
+                item.classList.add('my-message');
+                item.innerHTML = `<strong>Tú:</strong> ${data.text}`;
+            } else {
+                item.classList.add('other-message');
+                item.innerHTML = `<strong>${data.user}:</strong> ${data.text}`;
+            }
+
             messages.appendChild(item);
             messages.scrollTop = messages.scrollHeight;
         });
