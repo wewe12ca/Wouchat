@@ -155,7 +155,6 @@
             position: relative;
         }
 
-        /* Cabecera del Chat activo */
         .chat-header {
             height: 60px;
             background-color: #202c33;
@@ -166,7 +165,6 @@
             border-bottom: 1px solid #222d34;
         }
 
-        /* Contenedor de Mensajes con el fondo característico de WhatsApp */
         .messages-container {
             flex: 1;
             padding: 20px 5%;
@@ -181,16 +179,17 @@
         /* Burbujas de Mensaje */
         .message {
             max-width: 65%;
-            padding: 8px 12px;
+            padding: 8px 12px 6px 12px;
             border-radius: 8px;
             font-size: 14.2px;
             line-height: 19px;
             position: relative;
             word-break: break-word;
             box-shadow: 0 1px 0.5px rgba(11,20,26,.13);
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Mensajes propios (Verde WhatsApp) */
         .my-message {
             align-self: flex-end;
             background-color: #005c4b;
@@ -198,7 +197,6 @@
             border-top-right-radius: 0;
         }
 
-        /* Mensajes de otros usuarios (Gris oscuro) */
         .other-message {
             align-self: flex-start;
             background-color: #202c33;
@@ -213,7 +211,19 @@
             margin-bottom: 2px;
         }
 
-        /* Notificaciones del sistema (ej: usuario conectado) */
+        /* Hora dentro del mensaje */
+        .message-time {
+            font-size: 11px;
+            color: #8696a0;
+            align-self: flex-end;
+            margin-top: 4px;
+            margin-left: 12px;
+        }
+
+        .my-message .message-time {
+            color: #79ac9f;
+        }
+
         .notification {
             align-self: center;
             background-color: #182229;
@@ -226,7 +236,6 @@
             box-shadow: 0 1px 0.5px rgba(0,0,0,.13);
         }
 
-        /* Barra de Entrada de Texto inferior */
         .chat-input-bar {
             height: 62px;
             background-color: #202c33;
@@ -259,6 +268,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 16px;
         }
 
         .chat-input-bar button:hover { background-color: #008f6f; }
@@ -298,4 +308,98 @@
                 <div class="tag">Grupos</div>
             </div>
 
-            <ul class="user-list" id="users-list">
+            <ul class="user-list" id="users-list"></ul>
+        </div>
+
+        <!-- 3. Área Principal de Chat -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="avatar">W</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 16px;">Grupo Wouchat - ASIR</div>
+                    <div style="font-size: 13px; color: #8696a0;">Chat general en tiempo real</div>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messages"></div>
+
+            <form class="chat-input-bar" id="form">
+                <input id="input" autocomplete="off" placeholder="Escribe un mensaje" required />
+                <button type="submit">➔</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        let username = prompt("¿Cómo te llamas para entrar a Wouchat?") || "Anónimo";
+        socket.emit('join', username);
+
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+        const usersList = document.getElementById('users-list');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (input.value.trim()) {
+                socket.emit('chat_message', { user: username, text: input.value });
+                input.value = '';
+            }
+        });
+
+        socket.on('chat_message', (data) => {
+            const item = document.createElement('div');
+            item.classList.add('message');
+
+            if (data.user === username) {
+                item.classList.add('my-message');
+                item.innerHTML = `
+                    <div>${data.text}</div>
+                    <span class="message-time">${data.time}</span>
+                `;
+            } else {
+                item.classList.add('other-message');
+                item.innerHTML = `
+                    <div class="message-author">${data.user}</div>
+                    <div>${data.text}</div>
+                    <span class="message-time">${data.time}</span>
+                `;
+            }
+
+            messages.appendChild(item);
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        socket.on('notification', (text) => {
+            const item = document.createElement('div');
+            item.classList.add('notification');
+            item.textContent = text;
+            messages.appendChild(item);
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        socket.on('update_users', (users) => {
+            usersList.innerHTML = '';
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.classList.add('user-item');
+                
+                const initial = user.charAt(0).toUpperCase();
+                
+                li.innerHTML = `
+                    <div class="avatar">${initial}</div>
+                    <div class="user-info">
+                        <div class="name">${user}</div>
+                        <div class="status">en línea</div>
+                    </div>
+                `;
+                usersList.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>

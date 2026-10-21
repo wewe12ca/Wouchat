@@ -24,9 +24,18 @@ io.on('connection', (socket) => {
         io.emit('notification', `${username} se ha unido al chat`);
     });
 
-    // Reenviar mensajes de chat
+    // Reenviar mensajes de chat (con hora calculada)
     socket.on('chat_message', (data) => {
-        io.emit('chat_message', data);
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const timeString = `${hours}:${minutes}`;
+
+        io.emit('chat_message', {
+            user: data.user,
+            text: data.text,
+            time: timeString
+        });
     });
 
     // Cuando se desconecta
