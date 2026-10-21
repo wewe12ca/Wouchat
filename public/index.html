@@ -6,36 +6,12 @@
     <title>Wouchat - ASIR</title>
     <style>
         body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; padding: 20px; margin: 0; }
-        h1 { text-align: center; }
-
-        /* Contenedor principal para dividir chat y barra lateral */
-        .container {
-            display: flex;
-            gap: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .chat-section {
-            flex: 3;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Panel lateral de usuarios */
-        .sidebar {
-            flex: 1;
-            background: #1e293b;
-            padding: 15px;
-            border-radius: 8px;
-            height: 350px;
-            overflow-y: auto;
-        }
-
-        .sidebar h3 { margin-top: 0; font-size: 1.1rem; border-bottom: 1px solid #475569; padding-bottom: 8px; }
-        #users-list { list-style: none; padding: 0; margin: 0; }
-        #users-list li { padding: 6px 0; border-bottom: 1px solid #334155; font-size: 0.95rem; }
-
+        
+        /* Contenedor principal en dos columnas */
+        .container { display: flex; gap: 20px; max-width: 900px; margin: 0 auto; }
+        .chat-section { flex: 2; display: flex; flex-direction: column; }
+        .sidebar { flex: 1; background: #1e293b; padding: 15px; border-radius: 8px; height: 350px; overflow-y: auto; }
+        
         #messages { 
             background: #1e293b; 
             padding: 15px; 
@@ -48,37 +24,26 @@
             gap: 8px;
         }
 
-        .message { 
-            padding: 10px 14px; 
-            border-radius: 8px; 
-            max-width: 70%; 
-            word-break: break-word; 
-            line-height: 1.4;
-        }
-
+        .message { padding: 10px 14px; border-radius: 8px; max-width: 70%; word-break: break-word; line-height: 1.4; }
         .my-message { background: #3b82f6; align-self: flex-end; text-align: right; }
         .other-message { background: #334155; align-self: flex-start; text-align: left; }
-        
-        .notification {
-            text-align: center;
-            color: #94a3b8;
-            font-style: italic;
-            font-size: 0.85rem;
-            margin: 4px 0;
-            align-self: center;
-        }
+        .notification { text-align: center; color: #94a3b8; font-style: italic; font-size: 0.85rem; margin: 4px 0; align-self: center; }
 
         #form { display: flex; gap: 10px; }
         #input { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #475569; background: #334155; color: #fff; }
         button { padding: 10px 20px; background: #10b981; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
         button:hover { background: #059669; }
+        
+        h3 { margin-top: 0; color: #38bdf8; font-size: 1.1rem; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+        #users-list { list-style: none; padding: 0; margin: 0; }
+        #users-list li { padding: 6px 0; border-bottom: 1px solid #334155; font-size: 0.95rem; }
     </style>
 </head>
 <body>
-    <h1>Chat Colaborativo - Wouchat</h1>
+    <h1 style="text-align: center; margin-bottom: 25px;">Wouchat - ASIR</h1>
     
     <div class="container">
-        <!-- Sección del chat -->
+        <!-- Sección de mensajes y formulario -->
         <div class="chat-section">
             <div id="messages"></div>
             <form id="form">
@@ -87,7 +52,7 @@
             </form>
         </div>
 
-        <!-- Panel lateral de conectados -->
+        <!-- Panel lateral de usuarios conectados -->
         <div class="sidebar">
             <h3>Conectados</h3>
             <ul id="users-list"></ul>
@@ -138,10 +103,10 @@
             messages.scrollTop = messages.scrollHeight;
         });
 
-        // Actualizar la lista de usuarios en pantalla
+        // Recibir y pintar la lista actualizada de usuarios en la interfaz
         socket.on('update_users', (users) => {
-            usersList.innerHTML = ''; // Limpiar la lista actual
-            users.forEach((user) => {
+            usersList.innerHTML = '';
+            users.forEach(user => {
                 const li = document.createElement('li');
                 li.textContent = user;
                 usersList.appendChild(li);
