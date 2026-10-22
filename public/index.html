@@ -6,56 +6,30 @@
     <title>Wouchat - ASIR</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #111b21; color: #e9edef; height: 100vh; overflow: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #111b21; color: #e9edef; height: 100vh; overflow: hidden; }
 
-        /* Auth Screen */
-        .auth-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #0b141a; display: flex; align-items: center; justify-content: center; z-index: 999;
-        }
-        .auth-card {
-            background-color: #202c33; padding: 32px; border-radius: 12px; width: 360px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 16px; border: 1px solid #222d34;
-        }
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0b141a; display: flex; align-items: center; justify-content: center; z-index: 999; }
+        .auth-card { background-color: #202c33; padding: 32px; border-radius: 12px; width: 360px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 16px; border: 1px solid #222d34; }
         .auth-card h2 { color: #00a884; font-size: 24px; text-align: center; }
-        .auth-card p { color: #8696a0; font-size: 13px; text-align: center; }
         .auth-form { display: flex; flex-direction: column; gap: 12px; }
-        .auth-input {
-            background-color: #2a3942; border: 1px solid #222d34; border-radius: 8px;
-            padding: 12px; color: #e9edef; font-size: 14px; outline: none;
-        }
-        .auth-btn {
-            background-color: #00a884; color: #fff; border: none; padding: 12px;
-            border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s;
-        }
-        .auth-btn:hover { background-color: #008f6f; }
-        .auth-toggle { font-size: 13px; color: #53bdeb; text-align: center; cursor: pointer; user-select: none; }
+        .auth-input { background-color: #2a3942; border: 1px solid #222d34; border-radius: 8px; padding: 12px; color: #e9edef; font-size: 14px; outline: none; }
+        .auth-btn { background-color: #00a884; color: #fff; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .auth-toggle { font-size: 13px; color: #53bdeb; text-align: center; cursor: pointer; }
         .auth-error { color: #ea868f; font-size: 12px; text-align: center; display: none; }
 
-        /* App Layout */
         .app-container { display: flex; width: 100vw; height: 100vh; }
-        .icon-bar {
-            width: 60px; background-color: #202c33; display: flex; flex-direction: column;
-            align-items: center; justify-content: space-between; padding: 16px 0; border-right: 1px solid #222d34;
-        }
-        .icon-bar .top-icons, .icon-bar .bottom-icons { display: flex; flex-direction: column; gap: 20px; align-items: center; }
-        .icon-btn {
-            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; color: #aebac1; cursor: pointer; transition: background 0.2s;
-        }
+        .icon-bar { width: 60px; background-color: #202c33; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; border-right: 1px solid #222d34; }
+        .icon-bar .top-icons { display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        .icon-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #aebac1; cursor: pointer; transition: background 0.2s; }
         .icon-btn:hover, .icon-btn.active { background-color: #374248; color: #00a884; }
 
         .sidebar { width: 340px; background-color: #111b21; border-right: 1px solid #222d34; display: flex; flex-direction: column; }
         .sidebar-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .sidebar-header h2 { font-size: 20px; font-weight: 600; color: #e9edef; }
+        .sidebar-header h2 { font-size: 20px; font-weight: 600; }
 
         .notes-section { padding: 10px 16px; border-bottom: 1px solid #222d34; display: flex; align-items: center; gap: 12px; background-color: #182229; }
         .notes-avatar-container { position: relative; cursor: pointer; }
-        .note-bubble {
-            position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background-color: #00a884;
-            color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; white-space: nowrap; max-width: 100px;
-            overflow: hidden; text-overflow: ellipsis; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
+        .note-bubble { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background-color: #00a884; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; white-space: nowrap; max-width: 100px; overflow: hidden; text-overflow: ellipsis; }
         .notes-info { flex: 1; }
         .notes-info button { background-color: #00a884; border: none; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; cursor: pointer; margin-top: 4px; }
 
@@ -64,66 +38,51 @@
         .search-box input { background: transparent; border: none; outline: none; color: #e9edef; width: 100%; font-size: 14px; }
 
         .filter-tags { display: flex; gap: 8px; padding: 10px 12px; }
-        .tag { background-color: #202c33; color: #8696a0; padding: 6px 12px; border-radius: 18px; font-size: 13px; font-weight: 500; cursor: pointer; user-select: none; }
+        .tag { background-color: #202c33; color: #8696a0; padding: 6px 12px; border-radius: 18px; font-size: 13px; font-weight: 500; cursor: pointer; }
         .tag.active { background-color: #0a332c; color: #00a884; }
 
         .user-list { flex: 1; overflow-y: auto; list-style: none; }
         .user-item { display: flex; align-items: center; padding: 12px 16px; gap: 12px; cursor: pointer; border-bottom: 1px solid #1f2c34; position: relative; }
         .user-item:hover, .user-item.active { background-color: #202c33; }
 
-        .avatar {
-            width: 45px; height: 45px; border-radius: 50%; background-color: #6b7c85; display: flex;
-            align-items: center; justify-content: center; font-weight: bold; font-size: 18px; color: #fff; text-transform: uppercase; position: relative;
-        }
-
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background-color: #6b7c85; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; color: #fff; text-transform: uppercase; position: relative; }
         .user-info { flex: 1; }
-        .user-info .name { font-size: 15px; font-weight: 500; color: #e9edef; }
+        .user-info .name { font-size: 15px; font-weight: 500; }
         .user-info .status { font-size: 12px; color: #8696a0; }
-        .fav-star { color: #53bdeb; font-size: 16px; cursor: pointer; padding: 4px; }
-        .fav-star.is-fav { color: #f1c40f; }
 
-        /* Panel de Chat */
-        .chat-area { flex: 1; display: flex; flex-direction: column; background-color: #0b141a; }
+        .chat-area { flex: 1; display: flex; flex-direction: column; background-color: #0b141a; position: relative; }
         .chat-header { height: 60px; background-color: #202c33; padding: 10px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #222d34; }
-        .messages-container {
-            flex: 1; padding: 20px 5%; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;
-            background-image: radial-gradient(#1f2c34 1px, transparent 1px); background-size: 20px 20px;
-        }
-        .message {
-            max-width: 65%; padding: 8px 12px 6px 12px; border-radius: 8px; font-size: 14.2px; line-height: 19px; word-break: break-word; display: flex; flex-direction: column;
-        }
+        .messages-container { flex: 1; padding: 20px 5%; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; background-image: radial-gradient(#1f2c34 1px, transparent 1px); background-size: 20px 20px; }
+        .message { max-width: 65%; padding: 8px 12px 6px; border-radius: 8px; font-size: 14.2px; line-height: 19px; word-break: break-word; display: flex; flex-direction: column; }
         .my-message { align-self: flex-end; background-color: #005c4b; color: #e9edef; border-top-right-radius: 0; }
         .other-message { align-self: flex-start; background-color: #202c33; color: #e9edef; border-top-left-radius: 0; }
         .message-author { font-size: 12px; font-weight: 600; color: #53bdeb; margin-bottom: 2px; }
-        .message-time { font-size: 11px; color: #8696a0; align-self: flex-end; margin-top: 4px; margin-left: 12px; }
+        .message-time { font-size: 11px; color: #8696a0; align-self: flex-end; margin-top: 4px; }
         .my-message .message-time { color: #79ac9f; }
 
-        .chat-input-bar { height: 62px; background-color: #202c33; padding: 5px 16px; display: flex; align-items: center; gap: 12px; }
+        .chat-input-bar { height: 62px; background-color: #202c33; padding: 5px 16px; display: flex; align-items: center; gap: 10px; position: relative; }
         .chat-input-bar input { flex: 1; height: 42px; background-color: #2a3942; border: none; border-radius: 8px; padding: 9px 12px; color: #e9edef; font-size: 15px; outline: none; }
-        .chat-input-bar button { background: #00a884; border: none; width: 42px; height: 42px; border-radius: 50%; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .media-btn { background: transparent; border: none; font-size: 20px; cursor: pointer; color: #8696a0; padding: 4px; }
+        .media-btn:hover { color: #00a884; }
+        .send-btn { background: #00a884; border: none; width: 42px; height: 42px; border-radius: 50%; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
     </style>
 </head>
 <body>
 
-    <!-- Overlay Login/Registro -->
     <div class="auth-overlay" id="auth-overlay">
         <div class="auth-card">
             <h2 id="auth-title">Entrar a Wouchat</h2>
-            <p id="auth-subtitle">Introduce tu usuario y contraseña</p>
             <form class="auth-form" id="auth-form">
-                <input type="text" class="auth-input" id="auth-user" placeholder="Nombre de usuario" required autocomplete="off">
+                <input type="text" class="auth-input" id="auth-user" placeholder="Usuario" required autocomplete="off">
                 <input type="password" class="auth-input" id="auth-pass" placeholder="Contraseña" required>
                 <button type="submit" class="auth-btn" id="auth-submit-btn">Iniciar Sesión</button>
             </form>
             <div class="auth-error" id="auth-error"></div>
-            <div class="auth-toggle" id="auth-toggle" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate aquí</div>
+            <div class="auth-toggle" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate aquí</div>
         </div>
     </div>
 
-    <!-- Contenedor Principal -->
     <div class="app-container">
-        
-        <!-- Barra de Iconos -->
         <div class="icon-bar">
             <div class="top-icons">
                 <div class="icon-btn active" id="tab-chats-btn" onclick="switchTab('chats')" title="Chats">💬</div>
@@ -134,29 +93,29 @@
             </div>
         </div>
 
-        <!-- Sidebar Principal -->
         <div class="sidebar">
-            <div class="sidebar-header">
-                <h2 id="sidebar-title">Chats</h2>
-            </div>
+            <div class="sidebar-header"><h2 id="sidebar-title">Chats</h2></div>
 
-            <!-- Panel de Estados (Se activa con la espiral) -->
+            <!-- Panel de Estados -->
             <div id="statuses-panel" style="display: none; flex: 1; flex-direction: column; padding: 12px; gap: 12px; overflow-y: auto;">
                 <div style="background: #202c33; padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px;">
-                    <div style="font-size: 13px; font-weight: 600; color: #00a884;">Publicar un Estado</div>
-                    <input type="text" id="status-url-input" class="auth-input" placeholder="URL de Imagen o GIF">
-                    <input type="text" id="status-caption-input" class="auth-input" placeholder="Pie de foto (opcional)">
-                    <button onclick="uploadStatus()" class="auth-btn" style="padding: 8px; font-size: 13px;">Subir Estado</button>
+                    <div style="font-size: 13px; font-weight: 600; color: #00a884;">Nuevo Estado de Texto</div>
+                    <textarea id="status-text-input" class="auth-input" placeholder="¿Qué estás pensando?" style="resize:none; height:70px;"></textarea>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 12px; color: #8696a0;">Color de fondo:</span>
+                        <input type="color" id="status-color-input" value="#00a884" style="border:none; width:30px; height:30px; cursor:pointer; background:none;">
+                    </div>
+                    <button onclick="uploadStatus()" class="auth-btn" style="padding: 8px; font-size: 13px;">Publicar Estado</button>
                 </div>
                 <div style="font-size: 12px; color: #8696a0; font-weight: 600;">ESTADOS RECIENTES</div>
                 <div id="statuses-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
             </div>
 
-            <!-- Panel Tradicional de Chats -->
+            <!-- Panel de Chats -->
             <div id="chats-panel-wrapper" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
                 <div class="notes-section">
                     <div class="notes-avatar-container" onclick="createNote()">
-                        <div class="note-bubble" id="my-note-bubble" style="display:none;">Tu nota</div>
+                        <div class="note-bubble" id="my-note-bubble" style="display:none;"></div>
                         <div class="avatar" id="my-avatar">U</div>
                     </div>
                     <div class="notes-info">
@@ -168,39 +127,37 @@
                 <div class="search-container">
                     <div class="search-box">
                         <span>🔍</span>
-                        <input type="text" id="search-input" placeholder="Buscar un chat..." oninput="renderUserList()">
+                        <input type="text" id="search-input" placeholder="Buscar chat..." oninput="renderUserList()">
                     </div>
                 </div>
 
                 <div class="filter-tags">
-                    <div class="tag active" id="filter-todos" onclick="setFilter('todos')">Todos</div>
-                    <div class="tag" id="filter-favoritos" onclick="setFilter('favoritos')">Favoritos</div>
-                    <div class="tag" id="filter-grupos" onclick="setFilter('grupos')">Grupos</div>
+                    <div class="tag active">Todos</div>
+                    <div class="tag">Favoritos</div>
+                    <div class="tag">Grupos</div>
                 </div>
 
                 <ul class="user-list" id="users-list"></ul>
             </div>
         </div>
 
-        <!-- Panel de Chat Principal -->
         <div class="chat-area">
             <div class="chat-header">
                 <div class="avatar" id="active-chat-avatar">W</div>
                 <div>
                     <div style="font-weight: 600; font-size: 16px;" id="active-chat-title">Grupo Wouchat - ASIR</div>
                     <div style="font-size: 13px; color: #8696a0;" id="active-chat-status">Chat general en tiempo real</div>
-                    <div style="font-size: 12px; color: #00a884; font-style: italic; display: none;" id="typing-indicator"></div>
                 </div>
             </div>
 
             <div class="messages-container" id="messages"></div>
 
             <form class="chat-input-bar" id="form">
-                <input id="input" autocomplete="off" placeholder="Escribe un mensaje o pega una URL de imagen/GIF" required />
-                <button type="submit">➔</button>
+                <button type="button" class="media-btn" onclick="sendImagePrompt()" title="Enviar Imagen">📷</button>
+                <input id="input" autocomplete="off" placeholder="Escribe un mensaje..." required />
+                <button type="submit" class="send-btn">➔</button>
             </form>
         </div>
-
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -209,13 +166,18 @@
         let username = '';
         let isRegisterMode = false;
         let currentTab = 'chats';
+        let currentTarget = 'GLOBAL';
+        let onlineUsers = [];
+
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messagesContainer = document.getElementById('messages');
+        const usersList = document.getElementById('users-list');
 
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             document.getElementById('auth-title').textContent = isRegisterMode ? 'Crear Cuenta' : 'Entrar a Wouchat';
-            document.getElementById('auth-subtitle').textContent = isRegisterMode ? 'Regístrate para guardar tus chats' : 'Introduce tu usuario y contraseña';
             document.getElementById('auth-submit-btn').textContent = isRegisterMode ? 'Registrarse' : 'Iniciar Sesión';
-            document.getElementById('auth-toggle').textContent = isRegisterMode ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate aquí';
             document.getElementById('auth-error').style.display = 'none';
         }
 
@@ -223,52 +185,33 @@
             e.preventDefault();
             const userVal = document.getElementById('auth-user').value.trim();
             const passVal = document.getElementById('auth-pass').value;
-            const errorDiv = document.getElementById('auth-error');
-
-            const endpoint = isRegisterMode ? '/api/register' : '/api/login';
-
-            try {
-                const res = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: userVal, password: passVal })
-                });
-                const data = await res.json();
-
-                if (!res.ok) {
-                    errorDiv.textContent = data.error || 'Error al autenticar';
-                    errorDiv.style.display = 'block';
-                    return;
-                }
-
-                if (isRegisterMode) {
-                    alert('¡Cuenta creada con éxito! Ahora inicia sesión.');
-                    toggleAuthMode();
-                } else {
-                    username = data.username;
-                    document.getElementById('auth-overlay').style.display = 'none';
-                    initChat(data.note);
-                }
-            } catch (err) {
-                errorDiv.textContent = 'Error de conexión con el servidor';
-                errorDiv.style.display = 'block';
+            const res = await fetch(isRegisterMode ? '/api/register' : '/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: userVal, password: passVal })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                const errDiv = document.getElementById('auth-error');
+                errDiv.textContent = data.error;
+                errDiv.style.display = 'block';
+                return;
             }
+            if (isRegisterMode) { alert('Registrado con éxito. Inicia sesión.'); toggleAuthMode(); }
+            else { username = data.username; document.getElementById('auth-overlay').style.display = 'none'; initChat(data.note); }
         });
 
         function initChat(initialNote) {
             document.getElementById('my-avatar').textContent = username.charAt(0).toUpperCase();
             document.getElementById('my-username-display').textContent = username;
-
             if (initialNote) {
                 const bubble = document.getElementById('my-note-bubble');
                 bubble.textContent = initialNote;
                 bubble.style.display = 'block';
             }
-
             socket = io();
             socket.emit('join', username);
             socket.emit('get_history', 'GLOBAL');
-
             setupSocketListeners();
         }
 
@@ -297,55 +240,43 @@
         }
 
         function uploadStatus() {
-            const urlInput = document.getElementById('status-url-input');
-            const capInput = document.getElementById('status-caption-input');
-            if (urlInput.value.trim()) {
-                socket.emit('post_status', { media_url: urlInput.value.trim(), caption: capInput.value.trim() });
-                urlInput.value = '';
-                capInput.value = '';
+            const text = document.getElementById('status-text-input').value.trim();
+            const color = document.getElementById('status-color-input').value;
+            if (text) {
+                socket.emit('post_status', { text, bg_color: color });
+                document.getElementById('status-text-input').value = '';
             }
         }
 
-        let currentFilter = 'todos';
-        let currentTarget = 'GLOBAL';
-        let favorites = JSON.parse(localStorage.getItem('wouchat_favs') || '[]');
-        let onlineUsers = [];
-        let typingTimeout;
+        function sendImagePrompt() {
+            const url = prompt("Introduce la URL de la imagen:");
+            if (url && url.trim()) {
+                sendMessageText(url.trim());
+            }
+        }
 
-        const form = document.getElementById('form');
-        const input = document.getElementById('input');
-        const messagesContainer = document.getElementById('messages');
-        const usersList = document.getElementById('users-list');
-        const typingIndicator = document.getElementById('typing-indicator');
+        function sendMessageText(text) {
+            if (currentTarget === 'GLOBAL') {
+                socket.emit('chat_message', { user: username, text: text });
+            } else {
+                socket.emit('private_message', { targetUser: currentTarget, text: text });
+            }
+        }
 
         function createNote() {
-            const note = prompt("Escribe una nota corta (máx 60 caracteres):");
+            const note = prompt("Nota corta (máx 60 caracteres):");
             if (note !== null) {
                 socket.emit('set_note', note);
                 const bubble = document.getElementById('my-note-bubble');
-                if (note.trim()) {
-                    bubble.textContent = note;
-                    bubble.style.display = 'block';
-                } else {
-                    bubble.style.display = 'none';
-                }
+                if (note.trim()) { bubble.textContent = note; bubble.style.display = 'block'; }
+                else { bubble.style.display = 'none'; }
             }
         }
 
         function selectChat(target) {
             currentTarget = target;
-            typingIndicator.style.display = 'none';
-
-            if (target === 'GLOBAL') {
-                document.getElementById('active-chat-avatar').textContent = 'W';
-                document.getElementById('active-chat-title').textContent = 'Grupo Wouchat - ASIR';
-                document.getElementById('active-chat-status').textContent = 'Chat general en tiempo real';
-            } else {
-                document.getElementById('active-chat-avatar').textContent = target.charAt(0).toUpperCase();
-                document.getElementById('active-chat-title').textContent = target;
-                document.getElementById('active-chat-status').textContent = 'Mensaje privado directo';
-            }
-
+            document.getElementById('active-chat-avatar').textContent = target === 'GLOBAL' ? 'W' : target.charAt(0).toUpperCase();
+            document.getElementById('active-chat-title').textContent = target === 'GLOBAL' ? 'Grupo Wouchat - ASIR' : target;
             socket.emit('get_history', target);
             renderUserList();
         }
@@ -353,74 +284,29 @@
         function renderUserList() {
             usersList.innerHTML = '';
             const searchVal = document.getElementById('search-input').value.toLowerCase();
-
-            if (currentFilter === 'todos' || currentFilter === 'grupos' || (currentFilter === 'favoritos' && favorites.includes('GLOBAL'))) {
-                if ('grupo wouchat - asir'.includes(searchVal)) {
-                    const isFav = favorites.includes('GLOBAL');
-                    const isActive = currentTarget === 'GLOBAL';
-                    const li = document.createElement('li');
-                    li.className = `user-item ${isActive ? 'active' : ''}`;
-                    li.onclick = () => selectChat('GLOBAL');
-                    li.innerHTML = `
-                        <div class="avatar">W</div>
-                        <div class="user-info">
-                            <div class="name">Grupo Wouchat - ASIR</div>
-                            <div class="status">Grupo público</div>
-                        </div>
-                        <span class="fav-star ${isFav ? 'is-fav' : ''}" onclick="toggleFavorite('GLOBAL', event)">★</span>
-                    `;
-                    usersList.appendChild(li);
-                }
+            
+            if ('grupo wouchat - asir'.includes(searchVal)) {
+                const li = document.createElement('li');
+                li.className = `user-item ${currentTarget === 'GLOBAL' ? 'active' : ''}`;
+                li.onclick = () => selectChat('GLOBAL');
+                li.innerHTML = `<div class="avatar">W</div><div class="user-info"><div class="name">Grupo Wouchat - ASIR</div><div class="status">Grupo público</div></div>`;
+                usersList.appendChild(li);
             }
 
-            if (currentFilter === 'todos' || currentFilter === 'favoritos') {
-                onlineUsers.forEach(u => {
-                    if (u.username === username) return;
-                    if (!u.username.toLowerCase().includes(searchVal)) return;
-
-                    const isFav = favorites.includes(u.username);
-                    if (currentFilter === 'favoritos' && !isFav) return;
-
-                    const isActive = currentTarget === u.username;
-                    const li = document.createElement('li');
-                    li.className = `user-item ${isActive ? 'active' : ''}`;
-                    li.onclick = () => selectChat(u.username);
-
-                    const initial = u.username.charAt(0).toUpperCase();
-                    const noteHtml = u.note ? `<div class="note-bubble">${u.note}</div>` : '';
-
-                    li.innerHTML = `
-                        <div class="avatar">
-                            ${noteHtml}
-                            ${initial}
-                        </div>
-                        <div class="user-info">
-                            <div class="name">${u.username}</div>
-                            <div class="status">en línea</div>
-                        </div>
-                        <span class="fav-star ${isFav ? 'is-fav' : ''}" onclick="toggleFavorite('${u.username}', event)">★</span>
-                    `;
-                    usersList.appendChild(li);
-                });
-            }
+            onlineUsers.forEach(u => {
+                if (u.username === username || !u.username.toLowerCase().includes(searchVal)) return;
+                const li = document.createElement('li');
+                li.className = `user-item ${currentTarget === u.username ? 'active' : ''}`;
+                li.onclick = () => selectChat(u.username);
+                li.innerHTML = `<div class="avatar">${u.note ? `<div class="note-bubble">${u.note}</div>` : ''}${u.username.charAt(0)}</div><div class="user-info"><div class="name">${u.username}</div><div class="status">en línea</div></div>`;
+                usersList.appendChild(li);
+            });
         }
-
-        input.addEventListener('input', () => {
-            if (!socket) return;
-            socket.emit('typing', { target: currentTarget });
-            clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => socket.emit('stop_typing', { target: currentTarget }), 1500);
-        });
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             if (input.value.trim()) {
-                if (currentTarget === 'GLOBAL') {
-                    socket.emit('chat_message', { user: username, text: input.value });
-                } else {
-                    socket.emit('private_message', { targetUser: currentTarget, text: input.value });
-                }
-                socket.emit('stop_typing', { target: currentTarget });
+                sendMessageText(input.value.trim());
                 input.value = '';
             }
         });
@@ -432,70 +318,48 @@
                     data.messages.forEach(m => appendMessage(m.sender === username ? 'my' : 'other', m.sender, m.text, m.time));
                 }
             });
-
-            socket.on('chat_message', (data) => {
-                if (currentTarget === 'GLOBAL') appendMessage(data.user === username ? 'my' : 'other', data.user, data.text, data.time);
-            });
-
+            socket.on('chat_message', (data) => { if (currentTarget === 'GLOBAL') appendMessage(data.user === username ? 'my' : 'other', data.user, data.text, data.time); });
             socket.on('private_message', (data) => {
                 const chatKey = data.sender === username ? data.target : data.sender;
                 if (currentTarget === chatKey) appendMessage(data.sender === username ? 'my' : 'other', data.sender, data.text, data.time);
             });
-
-            socket.on('user_typing', (data) => {
-                if (data.target === currentTarget || (currentTarget === data.username && data.target !== 'GLOBAL')) {
-                    typingIndicator.textContent = `${data.username} está escribiendo...`;
-                    typingIndicator.style.display = 'block';
-                }
-            });
-
-            socket.on('user_stop_typing', (data) => {
-                if (data.target === currentTarget || (currentTarget === data.username && data.target !== 'GLOBAL')) {
-                    typingIndicator.style.display = 'none';
-                }
-            });
-
+            
             socket.on('statuses_list', (list) => {
                 const container = document.getElementById('statuses-container');
                 container.innerHTML = '';
                 list.forEach(s => {
                     const card = document.createElement('div');
-                    card.style.cssText = "background: #202c33; padding: 10px; border-radius: 8px; font-size: 13px;";
+                    const color = s.bg_color || '#00a884';
+                    const texto = s.text || 'Estado de texto';
+                    
+                    card.style.cssText = `background: ${color}; padding: 12px; border-radius: 8px; color: #fff; font-weight: bold; font-size: 14px; text-align: center; word-break: break-word;`;
                     card.innerHTML = `
-                        <div style="font-weight: bold; color: #53bdeb; margin-bottom: 4px;">${s.username}</div>
-                        <img src="${s.media_url}" style="max-width: 100%; border-radius: 6px; display: block; margin-bottom: 4px;">
-                        <div>${s.caption}</div>
+                        <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px; text-transform: uppercase;">${s.username}</div>
+                        <div>${texto}</div>
                     `;
                     container.appendChild(card);
                 });
             });
 
-            socket.on('new_status', () => {
-                if (currentTab === 'statuses') socket.emit('get_statuses');
-            });
-
-            socket.on('update_users', (users) => {
-                onlineUsers = users;
-                renderUserList();
-            });
+            socket.on('new_status', () => { if (currentTab === 'statuses') socket.emit('get_statuses'); });
+            socket.on('update_users', (users) => { onlineUsers = users; renderUserList(); });
         }
 
         function appendMessage(type, author, text, time) {
             const item = document.createElement('div');
             item.className = `message ${type === 'my' ? 'my-message' : 'other-message'}`;
+            
+            const isMedia = text.startsWith('http') && (
+                text.match(/\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i) || 
+                text.includes('gstatic.com/images') ||
+                text.includes('googleusercontent.com')
+            );
 
-            // Renderizar automáticamente URLs de imágenes o GIFs
-            const isImage = text.match(/\.(jpeg|jpg|gif|png|webp)$/i) || text.includes('tenor.com') || text.includes('giphy.com');
             let contentHtml = `<div>${text}</div>`;
-            if (isImage) {
-                contentHtml = `<img src="${text}" alt="Imagen/GIF" style="max-width: 100%; border-radius: 8px; margin-top: 4px; display: block;" />`;
+            if (isMedia) {
+                contentHtml = `<img src="${text}" alt="Imagen" style="max-width: 100%; border-radius: 8px; margin-top: 4px; display: block;" />`;
             }
-
-            item.innerHTML = `
-                ${type === 'other' ? `<div class="message-author">${author}</div>` : ''}
-                ${contentHtml}
-                <span class="message-time">${time}</span>
-            `;
+            item.innerHTML = `${type === 'other' ? `<div class="message-author">${author}</div>` : ''}${contentHtml}<span class="message-time">${time}</span>`;
             messagesContainer.appendChild(item);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
